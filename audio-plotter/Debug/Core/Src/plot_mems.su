@@ -1,0 +1,4 @@
+../Core/Src/plot_mems.c:52:6:PlotMemsDemo	48	static
+../Core/Src/plot_mems.c:112:6:Process_Input	24	static,ignoring_inline_asm
+../Core/Src/plot_mems.c:146:6:BSP_AUDIO_IN_TransferComplete_CallBack	0	static,ignoring_inline_asm
+../Core/Src/plot_mems.c:159:6:BSP_AUDIO_IN_HalfTransfer_CallBack	0	static,ignoring_inline_asm

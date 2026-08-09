@@ -1,0 +1,9 @@
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery_bus.c:238:9:BSP_I2C4_DeInit	3
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery_bus.c:266:26:MX_I2C4_Init	3
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery_bus.c:187:9:BSP_I2C4_Init	24
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery_bus.c:312:9:BSP_I2C4_WriteReg	2
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery_bus.c:349:9:BSP_I2C4_ReadReg	2
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery_bus.c:386:9:BSP_I2C4_WriteReg16	2
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery_bus.c:423:9:BSP_I2C4_ReadReg16	2
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery_bus.c:459:9:BSP_I2C4_IsReady	1
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery_bus.c:481:9:BSP_GetTick	1

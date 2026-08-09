@@ -1,0 +1,6 @@
+../Core/Src/audio_plotter_sample.c:14:6:simple_downsample	16	static
+../Core/Src/audio_plotter_sample.c:42:6:peak_downsample	36	static
+../Core/Src/audio_plotter_sample.c:74:6:avg_downsample	32	static
+../Core/Src/audio_plotter_sample.c:97:6:high_pass_filter	20	static
+../Core/Src/audio_plotter_sample.c:121:6:upsample	20	static
+../Core/Src/audio_plotter_sample.c:135:6:sample	32	static,ignoring_inline_asm

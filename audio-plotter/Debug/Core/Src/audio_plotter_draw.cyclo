@@ -1,0 +1,14 @@
+../Core/Src/audio_plotter_draw.c:22:6:Custom_DMA2D_CompleteCallback	1
+../Core/Src/audio_plotter_draw.c:28:6:Custom_DMA2D_ErrorCallback	1
+../Core/Src/audio_plotter_draw.c:33:6:swap_buffers	1
+../Core/Src/audio_plotter_draw.c:47:6:init_draw_module	2
+../Core/Src/audio_plotter_draw.c:61:6:wipe_dma2d_buffer	4
+../Core/Src/audio_plotter_draw.c:83:6:copy_dma2d_window	5
+../Core/Src/audio_plotter_draw.c:112:6:wipe_dma2d_buffer_fast	3
+../Core/Src/audio_plotter_draw.c:135:6:copy_dma2d_window_fast	3
+../Core/Src/audio_plotter_draw.c:169:6:bresnhams_line	9
+../Core/Src/audio_plotter_draw.c:215:6:draw_wave	10
+../Core/Src/audio_plotter_draw.c:266:6:draw_minmax	6
+../Core/Src/audio_plotter_draw.c:304:6:draw_buffer	3
+../Core/Src/audio_plotter_draw.c:338:6:draw_segment	1
+../Core/Src/audio_plotter_draw.c:373:6:copy_bspUI_to_backbuff	6

@@ -1,0 +1,3 @@
+../Core/Src/plot_adc.c:34:6:PlotADC_demo	32	static
+../Core/Src/plot_adc.c:91:6:HAL_ADC_ConvCpltCallback	0	static
+../Core/Src/plot_adc.c:106:6:HAL_ADC_ConvHalfCpltCallback	0	static
