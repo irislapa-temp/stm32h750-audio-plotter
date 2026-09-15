@@ -1,7 +1,7 @@
-../Core/Src/measureCycles.c:24:10:get_system_clock	0	static
-../Core/Src/measureCycles.c:29:6:EnableTiming	0	static
-../Core/Src/measureCycles.c:41:6:DWT_Init	0	static
-../Core/Src/measureCycles.c:48:10:DWT_GetCycles	0	static
-../Core/Src/measureCycles.c:53:6:Delay	0	static
-../Core/Src/measureCycles.c:66:6:TimeStart	0	static
-../Core/Src/measureCycles.c:74:6:TimeEnd	0	static
+../Core/Src/measureCycles.c:24:10:get_system_clock	8	static
+../Core/Src/measureCycles.c:29:6:EnableTiming	4	static
+../Core/Src/measureCycles.c:41:6:DWT_Init	4	static
+../Core/Src/measureCycles.c:48:10:DWT_GetCycles	4	static
+../Core/Src/measureCycles.c:53:6:Delay	24	static
+../Core/Src/measureCycles.c:66:6:TimeStart	4	static
+../Core/Src/measureCycles.c:74:6:TimeEnd	4	static

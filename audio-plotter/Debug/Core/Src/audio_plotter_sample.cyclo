@@ -1,6 +1,6 @@
 ../Core/Src/audio_plotter_sample.c:14:6:simple_downsample	7
 ../Core/Src/audio_plotter_sample.c:42:6:peak_downsample	11
-../Core/Src/audio_plotter_sample.c:74:6:avg_downsample	9
-../Core/Src/audio_plotter_sample.c:97:6:high_pass_filter	5
-../Core/Src/audio_plotter_sample.c:121:6:upsample	7
-../Core/Src/audio_plotter_sample.c:135:6:sample	8
+../Core/Src/audio_plotter_sample.c:76:6:avg_downsample	9
+../Core/Src/audio_plotter_sample.c:99:6:high_pass_filter	5
+../Core/Src/audio_plotter_sample.c:123:6:upsample	7
+../Core/Src/audio_plotter_sample.c:137:6:sample	9

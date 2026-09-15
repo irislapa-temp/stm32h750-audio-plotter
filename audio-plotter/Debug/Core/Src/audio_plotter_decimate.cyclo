@@ -1,6 +1,0 @@
-../Core/Src/audio_plotter_decimate.c:14:6:plotter_queue_push	3
-../Core/Src/audio_plotter_decimate.c:29:17:plotter_queue_pop	3
-../Core/Src/audio_plotter_decimate.c:49:6:sample_decimate	7
-../Core/Src/audio_plotter_decimate.c:76:6:peak_decimate	11
-../Core/Src/audio_plotter_decimate.c:107:6:avg_decimate	9
-../Core/Src/audio_plotter_decimate.c:131:6:decimate	10

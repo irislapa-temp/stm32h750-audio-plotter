@@ -12,6 +12,7 @@
 #include <limits.h>
 #include "main.h"
 #include "plot_err.h"
+#include "audio_plotter_config.h"
 
 #define DMA_TRANSFER_HALF 0u
 #define DMA_TRANSFER_COMPLETE 1u
@@ -27,36 +28,6 @@
 #define PEAK_DECIMATION 1u
 #define AVG_DECIMATION 2u
 
-#define LCD_WIDTH 480u
-#define LCD_HEIGHT 272u
-
-#define DEFAULT_MAIN_WINDOW_X 16
-#define DEFAULT_MAIN_WINDOW_Y 102
-#define DEFAULT_MAIN_WINDOW_WIDTH 448
-#define DEFAULT_MAIN_WINDOW_HEIGHT 148
-
-
-#define DEFAULT_PLOT_BUFF_SIZE DEFAULT_MAIN_WINDOW_WIDTH
-
-#define DEFAULT_SAMPLE_SIZE 1024u // should be divisible by 2
-#define DEFAULT_MAX_SEGMENTS 64u
-#define DEFAULT_SEGMENT_SIZE 512u // should be divisible by 2
-
-#define AUDIO_QUEUE_SIZE DEFAULT_MAX_SEGMENTS
-
-// --- Double Buffering Memory Map ---
-// STM32H750 Discovery SDRAM starts at 0xD0000000, apparently
-//TODO: place this in a more readable location
-#define BUFFER_PING 0xD0000000
-// Offset by ~522KB (480x272x4) to give plenty of room for the next frame
-#define BUFFER_PONG 0xD0100000
-
-
-typedef struct {
-    uint32_t pixel_format;
-    uint8_t  bpp;
-} dma2d_config_t;
-
 typedef struct {
   int16_t *p_samples;
   uint32_t n_samples;
@@ -67,6 +38,7 @@ typedef struct {
   uint16_t size;
   uint16_t wr; //where to push
   uint16_t r;  //where to pop
+#include "plot_err.h"
   uint16_t count;
 } audio_queue_t;
 
@@ -92,9 +64,8 @@ typedef struct {
 typedef struct {
   int16_t *buffer;
   uint16_t buffer_size;
-
+  uint16_t n_buffs;
   draw_window_t window;
-  dma2d_config_t dma2d_cfg;
 } plot_t;
 
 typedef struct {
@@ -106,22 +77,13 @@ typedef struct {
   uint16_t current_segment;
 } audio_plotter_handle_t;
 
+void decimate(audio_plotter_handle_t *h, uint32_t decimation_method);
 
+void plot_segment_wave(const int16_t *seg, uint32_t seg_size, draw_window_t w);
+void plot_segment_minmax(const int16_t *seg, uint32_t seg_size, draw_window_t w);
+void plot_buffer(audio_plotter_handle_t *h,int16_t *buff, uint32_t buffSize);
 
-
-void plotter_queue_push(audio_plotter_handle_t *h, audio_segment_t seg);
-uint32_t plotter_queue_pop(audio_plotter_handle_t *h, audio_segment_t *seg);
-void sample(audio_plotter_handle_t *h);
-
-void draw_wave(plot_t *plot_cfg, int16_t *buffer, uint32_t buffer_size);
-void draw_minmax(int16_t *buffer, uint32_t buffer_size, draw_window_t w);
-void draw_buffer(audio_plotter_handle_t *h, int16_t *buff, uint32_t buffSize);
-void draw_segment(audio_plotter_handle_t *h);
-
-void init_plotter(audio_plotter_handle_t *h);
-
-void plot_mems(audio_plotter_handle_t *h);
-void plot_audio(audio_plotter_handle_t *h);
+void init_plotter_adc(audio_plotter_handle_t *h, uint8_t audio_source);
 
 //void get_snapshot(int16_t *srcBuffBase, uint32_t srcBuffSize, uint32_t *srcIdx, int16_t *snapshotBuff, uint32_t snapshotBuffSize);
 

@@ -11,5 +11,5 @@
 ../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery.c:303:9:BSP_PB_DeInit	1
 ../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery.c:322:9:BSP_PB_GetState	1
 ../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery.c:331:6:BSP_PB_IRQHandler	1
-../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery.c:348:13:BSP_PB_Callback	1
 ../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery.c:339:13:BUTTON_USER_EXTI_Callback	1
+../Drivers/BSP/STM32H750B-DK/stm32h750b_discovery.c:348:13:BSP_PB_Callback	1

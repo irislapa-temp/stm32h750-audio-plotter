@@ -1,5 +1,5 @@
-../Core/Src/audio_plotter.c:19:6:segment_config	3
-../Core/Src/audio_plotter.c:38:6:init_plotter	4
+../Core/Src/audio_plotter.c:19:6:segment_config	4
+../Core/Src/audio_plotter.c:40:6:init_plotter	5
 ../Core/Src/audio_plotter.c:73:6:plot_adc	1
 ../Core/Src/audio_plotter.c:79:6:plot_mems	1
 ../Core/Src/audio_plotter.c:92:6:plot_audio	2

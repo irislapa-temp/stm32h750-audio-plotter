@@ -36,7 +36,6 @@
 /* Private functions ---------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc3;
-extern DMA2D_HandleTypeDef hlcd_dma2d;
 /******************************************************************************/
 /*            Cortex-M7 Processor Exceptions Handlers                         */
 /******************************************************************************/
@@ -207,14 +206,6 @@ void DMA1_Stream1_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Stream0_IRQn 1 */
 
   /* USER CODE END DMA1_Stream0_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA2D global interrupt.
-  */
-void DMA2D_IRQHandler(void)
-{
-  HAL_DMA2D_IRQHandler(&hlcd_dma2d);
 }
 /**
   * @}

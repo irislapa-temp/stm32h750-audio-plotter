@@ -67,8 +67,8 @@ all: main-build
 main-build: audio-plotter.elf secondary-outputs
 
 # Tool invocations
-audio-plotter.elf audio-plotter.map: $(OBJS) $(USER_OBJS) D:\faks\stm32h750-audio\audio-plotter\STM32H750XBHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "audio-plotter.elf" @"objects.list" $(USER_OBJS) -Wl,--start-group $(LIBS) -Wl,--end-group -mcpu=cortex-m7 -T"D:\faks\stm32h750-audio\audio-plotter\STM32H750XBHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="audio-plotter.map" -Wl,--gc-sections -static -L../Middlewares/ST/STM32_Audio/Addons/PDM/Lib --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+audio-plotter.elf audio-plotter.map: $(OBJS) $(USER_OBJS) /home/irinej/faks/stm32h750-audio/audio-plotter/STM32H750XBHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "audio-plotter.elf" @"objects.list" $(USER_OBJS) -Wl,--start-group $(LIBS) -Wl,--end-group -mcpu=cortex-m7 -T"/home/irinej/faks/stm32h750-audio/audio-plotter/STM32H750XBHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="audio-plotter.map" -Wl,--gc-sections -static -L../Middlewares/ST/STM32_Audio/Addons/PDM/Lib --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

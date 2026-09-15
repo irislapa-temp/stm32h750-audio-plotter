@@ -32,7 +32,7 @@ void simple_downsample(const uint16_t *p_buff_in, uint32_t in_size,
       uint32_t idx = (i * group_size);
       if (idx < in_size)
       {
-          uint16_t raw = p_buff_in[idx];
+          uint16_t raw  = p_buff_in[idx];
           p_buff_out[i] = (int16_t)((int32_t)raw - dc_offset);
       }
   }
@@ -59,11 +59,13 @@ void peak_downsample(const uint16_t *p_buff_in, uint32_t in_size,
 
     for (uint32_t j = 0; j < step; j++)
     {
-      int32_t s = (int32_t)p_buff_in[base + j] - dc_offset;
+      int16_t s;
+	  s = p_buff_in[base + j] - dc_offset;
+      //s = (int32_t)(int16_t)p_buff_in[base + j] - dc_offset;
 
       // cap to range
-      if (s < mn) mn = (int16_t)s;
-      if (s > mx) mx = (int16_t)s;
+      if (s < mn) mn = (int32_t)s;
+      if (s > mx) mx = (int32_t)s;
     }
     p_buff_out[2u*g]     = mn;
     p_buff_out[2u*g + 1] = mx;
@@ -135,13 +137,15 @@ void upsample(const int16_t *p_buff_in, uint32_t in_size, int16_t *p_buff_out, u
 void sample(audio_plotter_handle_t *h)
 {
 	uint16_t *p_buff_in = h->decimate.buffer;
-    uint32_t in_size = h->decimate.buffer_size;
+    uint32_t in_size    = h->decimate.buffer_size;
     int16_t *p_buff_out = h->plot.buffer;
-    uint32_t out_size = h->plot.buffer_size;
-    uint32_t dc_offset = h->decimate.dc_offset;
+    uint32_t out_size   = h->plot.buffer_size;
+    uint32_t dc_offset  = h->decimate.dc_offset;
+
+    if ((uint16_t *)p_buff_in == NULL || in_size == 0) return;
 
     SCB_InvalidateDCache_by_Addr((uint16_t *)p_buff_in, in_size*sizeof(uint16_t));
-    if ((uint16_t *)p_buff_in == NULL || in_size == 0) return;
+
     switch (h->decimate.sampling_method)
     {
         case SAMPLE_DECIMATION:
@@ -161,9 +165,3 @@ void sample(audio_plotter_handle_t *h)
             break;
     }
 }
-
-
-
-
-
-

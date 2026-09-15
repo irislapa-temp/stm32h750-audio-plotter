@@ -1,6 +1,6 @@
-../Core/Src/audio_plotter.c:19:6:segment_config	0	static,ignoring_inline_asm
-../Core/Src/audio_plotter.c:38:6:init_plotter	8	static,ignoring_inline_asm
-../Core/Src/audio_plotter.c:73:6:plot_adc	0	static
-../Core/Src/audio_plotter.c:79:6:plot_mems	0	static
+../Core/Src/audio_plotter.c:19:6:segment_config	16	static
+../Core/Src/audio_plotter.c:40:6:init_plotter	16	static
+../Core/Src/audio_plotter.c:73:6:plot_adc	16	static
+../Core/Src/audio_plotter.c:79:6:plot_mems	16	static
 ../Core/Src/audio_plotter.c:92:6:plot_audio	32	static
-../Core/Src/audio_plotter.c:116:6:error_handler	0	static,ignoring_inline_asm
+../Core/Src/audio_plotter.c:116:6:error_handler	24	static,ignoring_inline_asm

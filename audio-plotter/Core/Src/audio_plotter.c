@@ -27,10 +27,12 @@ void segment_config(audio_plotter_handle_t *h, uint16_t n_segments)
 		error_handler(ERR_INVALID_PARAM);
 		return;
 	}
-	h->n_segments = n_segments;
-	h->current_segment = 0;
-	h->decimate.buffer_size = DEFAULT_SAMPLE_SIZE / n_segments;
-	h->plot.buffer_size = DEFAULT_PLOT_BUFF_SIZE / n_segments;
+	h->n_segments           = n_segments;
+	h->current_segment      = 0;
+	//h->decimate.buffer_size = DEFAULT_SAMPLE_SIZE / n_segments;
+	//h->plot.buffer_size     = DEFAULT_PLOT_BUFF_SIZE / n_segments;
+	h->decimate.buffer_size = 448/2;
+	h->plot.buffer_size     = 448/2;
 }
 
 
@@ -41,29 +43,27 @@ void init_plotter(audio_plotter_handle_t *h)
 		error_handler(ERR_NULL_PTR);
 		return;
 	}
-	if (h->decimate.audio_source == AUDIO_SOURCE_ADC)
-	{
-		h->decimate.dma_wr = 0;
-		h->plot.buffer = &plot_buff;
-		h->plot.buffer_size = DEFAULT_PLOT_BUFF_SIZE;
-	}
-	else if (h->decimate.audio_source == AUDIO_SOURCE_MEMS)
-	{
-		h->decimate.dma_wr = 0;
-		h->plot.buffer = &plot_buff;
-		h->plot.buffer_size = DEFAULT_PLOT_BUFF_SIZE;
-		h->queue.size = AUDIO_QUEUE_SIZE;
-		h->queue.r = 0;
-		h->queue.wr = 0;
-
-	}
-	else
+	if (h->decimate.audio_source != AUDIO_SOURCE_ADC &&
+	        h->decimate.audio_source != AUDIO_SOURCE_MEMS)
 	{
 		error_handler(ERR_UNSUPPORTED);
 		return;
 	}
+    h->plot.buffer      = plot_buff;
+    h->plot.buffer_size = DEFAULT_PLOT_BUFF_SIZE;
+
+    h->queue.size  = AUDIO_QUEUE_SIZE;
+    h->queue.r     = 0;
+    h->queue.wr    = 0;
+    h->queue.count = 0;
+    h->decimate.dma_wr      = 0;
+    if (h->decimate.audio_source == AUDIO_SOURCE_ADC)
+    {
+    	h->decimate.dc_offset = INT16_MAX;
+    }
+
 	segment_config(h, 2);
-	init_draw_module(&h->plot);
+	//init_draw_module(&h->plot);
 }
 
 
@@ -104,7 +104,7 @@ void plot_audio(audio_plotter_handle_t *h)
   h->decimate.buffer_size = seg.n_samples;
   sample(h);
   t_sample = DWT_GetCycles() - t0 - t_pop;
-  //draw_buffer(h, h->plot.buffer, h->plot.buffer_size);
+  //plot_buffer(h, h->plot.buffer, h->plot.buffer_size);  //draw_segment(h);
   draw_segment(h);
   t_draw = DWT_GetCycles() - t0 - t_pop - t_sample;
   uint32_t t1 = DWT_GetCycles();

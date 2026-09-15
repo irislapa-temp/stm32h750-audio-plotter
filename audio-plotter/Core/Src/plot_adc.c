@@ -15,7 +15,7 @@
 #include "audio_plotter.h"
 
 /* Parameters ----------------------------------------------------------------*/
-#define ADC_DMA_BUFFER_SIZE 256U
+#define ADC_DMA_BUFFER_SIZE 448U
 
 /* DMA buffers ---------------------------------------------------------------*/
 ALIGN_32BYTES (uint16_t adcDmaBuffer[ADC_DMA_BUFFER_SIZE]);
@@ -57,17 +57,19 @@ void PlotADC_demo(void)
   MX_TIM6_Init();
   MX_ADC3_Init();
   HAL_TIM_Base_Start(&htim6);
-  HAL_ADC_Start_DMA(&hadc3, (uint32_t*)adcDmaBuffer, ADC_DMA_BUFFER_SIZE);
 
-  hplot_adc.decimate.audio_source = AUDIO_SOURCE_ADC;
-  hplot_adc.decimate.buffer = (uint16_t*)adcDmaBuffer;
-  hplot_adc.decimate.buffer_size = ADC_DMA_BUFFER_SIZE;
-  hplot_adc.main_window.x = 12;
-  hplot_adc.main_window.y = 102;
-  hplot_adc.main_window.width = x_size - 24;
-  hplot_adc.main_window.height = y_size - 114;
+  hplot_adc.decimate.audio_source    = AUDIO_SOURCE_ADC;
+  hplot_adc.decimate.sampling_method = PEAK_DECIMATION;
+  hplot_adc.decimate.buffer          = (uint16_t*)adcDmaBuffer;
+  hplot_adc.decimate.buffer_size     = ADC_DMA_BUFFER_SIZE;
+  hplot_adc.main_window.x            = 12;
+  hplot_adc.main_window.y            = 102;
+  hplot_adc.main_window.width        = x_size - 24;
+  hplot_adc.main_window.height       = y_size - 114;
 
   init_plotter(&hplot_adc);
+
+  HAL_ADC_Start_DMA(&hadc3, (uint32_t*)adcDmaBuffer, ADC_DMA_BUFFER_SIZE);
 
   while (1)
   {
@@ -83,6 +85,8 @@ void PlotADC_demo(void)
   }
 }
 
+
+//todo: what is the segment size, what is the pointer?
 /**
   * @brief  Conversion complete callback in non-blocking mode.
   * @param  hadc ADC handle
@@ -90,12 +94,19 @@ void PlotADC_demo(void)
   */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-  if (hadc->Instance == ADC3)
-  {
-    hplot_adc.decimate.dma_transfer = DMA_TRANSFER_COMPLETE;
-    hplot_adc.decimate.dma_wr = ADC_DMA_BUFFER_SIZE;
-    hplot_adc.decimate.plot_flag = 1;
-  }
+   if (hadc->Instance != ADC3) return;
+
+   SCB_InvalidateDCache_by_Addr((uint32_t*)&adcDmaBuffer[ADC_DMA_BUFFER_SIZE/2],
+		   ADC_DMA_BUFFER_SIZE/2 * sizeof(uint16_t));
+
+   audio_segment_t seg = {
+	 .p_samples = (int16_t*)&adcDmaBuffer[ADC_DMA_BUFFER_SIZE/2],
+	 .n_samples = ADC_DMA_BUFFER_SIZE/2
+   };
+
+   __disable_irq();
+   plotter_queue_push(&hplot_adc, seg);
+   __enable_irq();
 }
 
 /**
@@ -105,10 +116,17 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   */
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 {
-  if (hadc->Instance == ADC3)
-  {
-    hplot_adc.decimate.dma_transfer = DMA_TRANSFER_HALF;
-    hplot_adc.decimate.dma_wr = ADC_DMA_BUFFER_SIZE / 2U;
-    hplot_adc.decimate.plot_flag = 1;
-  }
+   if (hadc->Instance != ADC3) return;
+
+   SCB_InvalidateDCache_by_Addr((uint32_t*)&adcDmaBuffer[0],
+		   ADC_DMA_BUFFER_SIZE/2 * sizeof(uint16_t));
+
+   audio_segment_t seg = {
+	 .p_samples = (int16_t*)&adcDmaBuffer[0],
+	 .n_samples = ADC_DMA_BUFFER_SIZE/2
+   };
+
+   __disable_irq();
+   plotter_queue_push(&hplot_adc, seg);
+   __enable_irq();
 }

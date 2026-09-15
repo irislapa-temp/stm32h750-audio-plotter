@@ -27,7 +27,7 @@
 // Data Integrity Errors
 #define ERR_MINMAX_MISMATCH     0x30  // Peak decimate called with odd out_size
 #define ERR_QUEUE_OVERFLOW      0x31  // Pushing to a full queue
-#define ERR_QUEUE_EMPTY         0x32
+#define ERR_QUEUE_UNDERFLOW     0x32  // Popping from an empty queue
 #define ERR_OUT_OF_BOUNDS	      0x33
 
 // Parameter errors

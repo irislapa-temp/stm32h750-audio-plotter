@@ -1450,7 +1450,7 @@ uint32_t HAL_RCC_GetSysClockFreq(void)
           case RCC_PLLSOURCE_HSE:  /* HSE used as PLL clock source */
             pllvco = ((float_t)HSE_VALUE / (float_t)pllm) * ((float_t)(uint32_t)(RCC->PLL1DIVR & RCC_PLL1DIVR_N1) + (fracn1 / (float_t)0x2000) + (float_t)1);
             break;
-
+            https://www.youtube.com/watch?v=0kO0SnAu8Nc
           default:
             pllvco = ((float_t)CSI_VALUE / (float_t)pllm) * ((float_t)(uint32_t)(RCC->PLL1DIVR & RCC_PLL1DIVR_N1) + (fracn1 / (float_t)0x2000) + (float_t)1);
             break;

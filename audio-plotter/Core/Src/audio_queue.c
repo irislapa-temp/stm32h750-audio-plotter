@@ -6,6 +6,7 @@
  */
 
 #include "audio_plotter.h"
+#include "main.h"
 
 void plotter_queue_push(audio_plotter_handle_t *h, audio_segment_t seg)
 {

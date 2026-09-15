@@ -1,6 +1,0 @@
-../Core/Src/audio_plotter_decimate.c:14:6:plotter_queue_push	32	static,ignoring_inline_asm
-../Core/Src/audio_plotter_decimate.c:29:17:plotter_queue_pop	20	static,ignoring_inline_asm
-../Core/Src/audio_plotter_decimate.c:49:6:sample_decimate	16	static
-../Core/Src/audio_plotter_decimate.c:76:6:peak_decimate	36	static
-../Core/Src/audio_plotter_decimate.c:107:6:avg_decimate	32	static
-../Core/Src/audio_plotter_decimate.c:131:6:decimate	40	static,ignoring_inline_asm

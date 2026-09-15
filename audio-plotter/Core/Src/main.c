@@ -33,9 +33,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define LAYER_0 0
-#define LAYER_1 1
-// todo: demistify channel numbers
+// todo:
 uint32_t channel_nbr = 1;
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -86,8 +84,6 @@ int main(void)
      in the meantime Domain D2 is put in STOP mode(Cortex-M4 in deep-sleep)
   */
 
-  MPU_Config_SDRAM_NonCacheable();
-
   /* Configure the MPU attributes as Write Through */
   MPU_Config();
 
@@ -113,8 +109,6 @@ int main(void)
 
   BSP_LED_Init(LED_GREEN);
   BSP_LED_Init(LED_RED);
-
-
 
   BSP_LCD_Init(0, LCD_ORIENTATION_LANDSCAPE);
   UTIL_LCD_SetFuncDriver(&LCD_Driver);
@@ -147,19 +141,15 @@ int main(void)
       Error_Handler();
     }
 
-  //BSP_LCD_Init(0, LCD_ORIENTATION_LANDSCAPE);
-  //UTIL_LCD_SetFuncDriver(&LCD_Driver);
+  BSP_LCD_Init(0, LCD_ORIENTATION_LANDSCAPE);
+  UTIL_LCD_SetFuncDriver(&LCD_Driver);
   Display_DemoDescription();
 
-    //todo: dma2d drawing
-    __HAL_RCC_DMA2D_CLK_ENABLE(); // Guarantee the clock is on
-    HAL_NVIC_SetPriority(DMA2D_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(DMA2D_IRQn);
 
   //AudioPlay_demo();
   //AudioRecord_demo();
-  //PlotADC_demo();
-  PlotMemsDemo();
+  PlotADC_demo();
+  //PlotMemsDemo();
 
   while (1)
   {
@@ -415,35 +405,6 @@ static void MPU_Config(void)
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 
 }
-
-
-//todo:: dma2d drawing
-void MPU_Config_SDRAM_NonCacheable(void)
-{
-    MPU_Region_InitTypeDef MPU_InitStruct = {0};
-
-    /* Disable the MPU before configuring */
-    HAL_MPU_Disable();
-
-    /* Configure the SDRAM region as Non-Cacheable */
-    MPU_InitStruct.Enable           = MPU_REGION_ENABLE;
-    MPU_InitStruct.Number           = MPU_REGION_NUMBER0;
-    MPU_InitStruct.BaseAddress      = 0xD0000000;             // Start of your SDRAM
-    MPU_InitStruct.Size             = MPU_REGION_SIZE_8MB;    // Adjust to your SDRAM size
-    MPU_InitStruct.SubRegionDisable = 0x00;
-    MPU_InitStruct.TypeExtField     = MPU_TEX_LEVEL1;
-    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-    MPU_InitStruct.DisableExec      = MPU_INSTRUCTION_ACCESS_DISABLE;
-    MPU_InitStruct.IsShareable      = MPU_ACCESS_NOT_SHAREABLE;
-    MPU_InitStruct.IsCacheable      = MPU_ACCESS_NOT_CACHEABLE;   // <-- THE MAGIC LINE
-    MPU_InitStruct.IsBufferable     = MPU_ACCESS_NOT_BUFFERABLE;
-
-    HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-    /* Enable the MPU */
-    HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-}
-
 
 /**
   * @brief  CPU L1-Cache enable.

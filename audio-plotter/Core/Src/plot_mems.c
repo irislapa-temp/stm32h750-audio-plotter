@@ -8,22 +8,16 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include <stdio.h>
-#include <math.h>
 #include "string.h"
 #include "audio_plotter.h"
 #include "plot_err.h"
 
 /* Parameters ----------------------------------------------------------------*/
-#define AUDIO_FREQUENCY        16000U
+#define AUDIO_SAMPLE_RATE_HZ        16000U
 #define AUDIO_VOLUME               40U
-#define AUDIO_IN_PDM_BUFFER_SIZE   (uint32_t)(128*AUDIO_FREQUENCY/16000U*2) //
+#define AUDIO_IN_PDM_BUFFER_SIZE   ((uint32_t)(128U * AUDIO_SAMPLE_RATE_HZ / 16000U * 2U))
 #define AUDIO_PCM_BUFFER_SIZE 4096U
 #define INVERT_CH(ch) (3U - (ch)) // universal solution for mono/stereo, returns 2 for mono and 1 for stereo
-
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846f
-#endif
 
 /* DMA buffer ---------------------------------------------------------------*/
 #if defined ( __CC_ARM )
@@ -42,7 +36,7 @@ extern uint32_t channel_nbr;
 extern __IO uint32_t ButtonState;
 extern uint8_t CheckForUserInput(void);
 
-audio_plotter_handle_t hplot_mems;
+static audio_plotter_handle_t hplot_mems;
 
 
 /**
@@ -74,26 +68,28 @@ void PlotMemsDemo(void)
 
   audio_in.Device = AUDIO_IN_DEVICE_DIGITAL_MIC;
   audio_in.ChannelsNbr = channel_nbr;
-  audio_in.SampleRate = AUDIO_FREQUENCY;
+  audio_in.SampleRate = AUDIO_SAMPLE_RATE_HZ;
   audio_in.BitsPerSample = AUDIO_RESOLUTION_16B;
   audio_in.Volume = AUDIO_VOLUME;
 
   BSP_AUDIO_IN_Init(1, &audio_in);
 
   UTIL_LCD_DisplayStringAt(0, 190, (uint8_t *)"Start Recording ", CENTER_MODE);
-  BSP_AUDIO_IN_RecordPDM(1, (uint8_t*)&recordPDMBuff, 2*AUDIO_IN_PDM_BUFFER_SIZE);
+  BSP_AUDIO_IN_RecordPDM(1, (uint8_t*)&recordPDMBuff, 2U * AUDIO_IN_PDM_BUFFER_SIZE);
 
-//TODO move this to a function
-  hplot_mems.decimate.audio_source = AUDIO_SOURCE_MEMS;
-  hplot_mems.decimate.buffer = (int16_t *) recordPCMBuff;
-  hplot_mems.decimate.dma_wr = pcmWritePtr;
-  hplot_mems.main_window.x = DEFAULT_MAIN_WINDOW_X;
-  hplot_mems.main_window.y = DEFAULT_MAIN_WINDOW_Y;
-  hplot_mems.main_window.width = DEFAULT_MAIN_WINDOW_WIDTH;
-  hplot_mems.main_window.height = DEFAULT_MAIN_WINDOW_HEIGHT;
+
+  hplot_mems.decimate.audio_source    = AUDIO_SOURCE_MEMS;
+  hplot_mems.decimate.sampling_method = PEAK_DECIMATION;
+  hplot_mems.decimate.buffer          = (int16_t *) recordPCMBuff;
+  hplot_mems.decimate.buffer_size     = AUDIO_PCM_BUFFER_SIZE;
+  hplot_mems.decimate.dma_wr          = pcmWritePtr;
+  hplot_mems.main_window.x            = 12;
+  hplot_mems.main_window.y            = 102;
+  hplot_mems.main_window.width        = x_size - 24;
+  hplot_mems.main_window.height       = y_size - 114;
 
   init_plotter(&hplot_mems);
-  copy_bspUI_to_backbuff(&hplot_mems.plot);
+
 
   while (1)
   {
@@ -120,13 +116,13 @@ void Process_Input(uint32_t Instance, uint32_t pdm_offset)
 
 
 	// todo: extract segment size from plot_t
-	if (pcmWritePtr % DEFAULT_SAMPLE_SIZE == 0 && pcmWritePtr != 0)
+	if (pcmWritePtr % hplot_mems.decimate.buffer_size == 0 && pcmWritePtr != 0)
 	{
-		uint32_t n_samples = DEFAULT_SAMPLE_SIZE/hplot_mems.n_segments;
+		uint32_t n_samples = hplot_mems.decimate.buffer_size/hplot_mems.n_segments;
 		audio_segment_t seg = {
 		.p_samples = (int16_t *)&recordPCMBuff[pcmWritePtr],
-		.n_samples = DEFAULT_SAMPLE_SIZE
-	};
+		.n_samples = hplot_mems.decimate.buffer_size
+		};
 
 	__disable_irq();
 	plotter_queue_push(&hplot_mems, seg);
