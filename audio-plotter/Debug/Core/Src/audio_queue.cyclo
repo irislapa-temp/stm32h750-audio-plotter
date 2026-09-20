@@ -1,2 +1,2 @@
-../Core/Src/audio_queue.c:11:6:plotter_queue_push	3
-../Core/Src/audio_queue.c:26:10:plotter_queue_pop	3
+../Core/Src/audio_queue.c:11:6:queue_push	3
+../Core/Src/audio_queue.c:26:10:queue_pop	3

@@ -143,12 +143,10 @@ int main(void)
 
   BSP_LCD_Init(0, LCD_ORIENTATION_LANDSCAPE);
   UTIL_LCD_SetFuncDriver(&LCD_Driver);
-  Display_DemoDescription();
-
 
   //AudioPlay_demo();
   //AudioRecord_demo();
-  PlotADC_demo();
+  PlotAdcDemo();
   //PlotMemsDemo();
 
   while (1)

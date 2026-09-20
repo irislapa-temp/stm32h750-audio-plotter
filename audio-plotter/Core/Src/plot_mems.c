@@ -35,6 +35,8 @@ uint32_t pcmWritePtr = 0;
 extern uint32_t channel_nbr;
 extern __IO uint32_t ButtonState;
 extern uint8_t CheckForUserInput(void);
+extern void init_plotter(audio_plotter_handle_t *h);
+extern void plot_audio(audio_plotter_handle_t *h);
 
 static audio_plotter_handle_t hplot_mems;
 
@@ -125,7 +127,7 @@ void Process_Input(uint32_t Instance, uint32_t pdm_offset)
 		};
 
 	__disable_irq();
-	plotter_queue_push(&hplot_mems, seg);
+	queue_push(&hplot_mems, seg);
 	__enable_irq();
 	}
 	pcmWritePtr += AUDIO_IN_PDM_BUFFER_SIZE/4/2/INVERT_CH(channel_nbr);

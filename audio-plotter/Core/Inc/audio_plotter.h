@@ -13,6 +13,7 @@
 #include "main.h"
 #include "plot_err.h"
 #include "audio_plotter_config.h"
+#include "audio_queue.h"
 
 #define DMA_TRANSFER_HALF 0u
 #define DMA_TRANSFER_COMPLETE 1u
@@ -28,19 +29,30 @@
 #define PEAK_DECIMATION 1u
 #define AVG_DECIMATION 2u
 
+// define plotting methods
+#define WAVEFROM 0u
+#define MINMAX 1u
+// todo: frequency spectrum ... seperate project?
+
 typedef struct {
   int16_t *p_samples;
   uint32_t n_samples;
 } audio_segment_t;
 
 typedef struct {
-  audio_segment_t buffer[AUDIO_QUEUE_SIZE];
+  audio_segment_t buffer[MAX_AUDIO_QUEUE_SIZE];
   uint16_t size;
   uint16_t wr; //where to push
   uint16_t r;  //where to pop
-#include "plot_err.h"
   uint16_t count;
-} audio_queue_t;
+} queue_t;
+
+typedef struct {
+    uint16_t x;
+    uint16_t y;
+    uint16_t width;
+    uint16_t height;
+} draw_window_t;
 
 typedef struct {
 	uint8_t audio_source;
@@ -55,13 +67,6 @@ typedef struct {
 } decimate_t;
 
 typedef struct {
-    uint16_t x;
-    uint16_t y;
-    uint16_t width;
-    uint16_t height;
-} draw_window_t;
-
-typedef struct {
   int16_t *buffer;
   uint16_t buffer_size;
   uint16_t n_buffs;
@@ -72,9 +77,10 @@ typedef struct {
   decimate_t decimate;
   plot_t plot;
   draw_window_t main_window;
-  audio_queue_t queue;
+  queue_t queue;
   uint16_t n_segments;
-  uint16_t current_segment;
+  uint16_t curr_seg_idx;
+  audio_segment_t curr_seg;
 } audio_plotter_handle_t;
 
 void decimate(audio_plotter_handle_t *h, uint32_t decimation_method);
@@ -84,6 +90,10 @@ void plot_segment_minmax(const int16_t *seg, uint32_t seg_size, draw_window_t w)
 void plot_buffer(audio_plotter_handle_t *h,int16_t *buff, uint32_t buffSize);
 
 void init_plotter_adc(audio_plotter_handle_t *h, uint8_t audio_source);
+
+extern void queue_push(audio_plotter_handle_t *h, audio_segment_t seg);
+extern uint32_t queue_pop(audio_plotter_handle_t *h, audio_segment_t *seg);
+
 
 //void get_snapshot(int16_t *srcBuffBase, uint32_t srcBuffSize, uint32_t *srcIdx, int16_t *snapshotBuff, uint32_t snapshotBuffSize);
 

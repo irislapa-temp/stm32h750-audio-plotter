@@ -14,7 +14,7 @@
 #endif
 
 int16_t plot_buff[DEFAULT_PLOT_BUFF_SIZE];
-
+extern current_adcDmaBuffer_size;
 
 void segment_config(audio_plotter_handle_t *h, uint16_t n_segments)
 {
@@ -29,10 +29,8 @@ void segment_config(audio_plotter_handle_t *h, uint16_t n_segments)
 	}
 	h->n_segments           = n_segments;
 	h->current_segment      = 0;
-	//h->decimate.buffer_size = DEFAULT_SAMPLE_SIZE / n_segments;
-	//h->plot.buffer_size     = DEFAULT_PLOT_BUFF_SIZE / n_segments;
-	h->decimate.buffer_size = 448/2;
-	h->plot.buffer_size     = 448/2;
+	h->plot.buffer_size     = DEFAULT_PLOT_BUFF_SIZE / n_segments;
+	h->decimate.buffer_size = (DEFAULT_PLOT_BUFF_SIZE/n_segments)*2;
 }
 
 
@@ -52,7 +50,7 @@ void init_plotter(audio_plotter_handle_t *h)
     h->plot.buffer      = plot_buff;
     h->plot.buffer_size = DEFAULT_PLOT_BUFF_SIZE;
 
-    h->queue.size  = AUDIO_QUEUE_SIZE;
+    h->queue.size  = MAX_AUDIO_QUEUE_SIZE;
     h->queue.r     = 0;
     h->queue.wr    = 0;
     h->queue.count = 0;
@@ -62,53 +60,26 @@ void init_plotter(audio_plotter_handle_t *h)
     	h->decimate.dc_offset = INT16_MAX;
     }
 
-	segment_config(h, 2);
+	segment_config(h, 1);
 	//init_draw_module(&h->plot);
 }
 
-
-
-
-//todo: what am i plotting? n_buffers, half-half buffer, or am i polling n samples
-void plot_adc(audio_plotter_handle_t *h)
-{
-	draw_buffer(h, h->plot.buffer, h->plot.buffer_size);
-}
-
-
-void plot_mems(audio_plotter_handle_t *h)
-{
-	//draw_buffer(h, h->plot.buffer, h->plot.buffer_size);
-
-}
-
-
-
 // bottom of the callstack
-uint32_t core_clock;
-uint32_t t_pop;
-uint32_t t_sample;
-uint32_t t_draw;
-void plot_audio(audio_plotter_handle_t *h)
-{
-	DWT_Init();
-	core_clock = get_system_clock();
-	uint32_t t0 = DWT_GetCycles();
 
-  //SCB_InvalidateDCache_by_Addr((uint32_t *)h->decimate.buffer, h->decimate.buffer_size * sizeof(uint16_t));
-  audio_segment_t seg;
-  if (!plotter_queue_pop(h, &seg))
+audio_segment_t curr_seg;
+void plot_audio(audio_plotter_handle_t *h, uint8_t ploting_method)
+{
+
+  if (!queue_pop(h, &curr_seg))
 	  return;
-  t_pop = DWT_GetCycles() - t0;
-  h->decimate.buffer = (uint16_t *)seg.p_samples;
-  h->decimate.buffer_size = seg.n_samples;
+
+  h->decimate.buffer = (uint16_t *)curr_seg.p_samples;
+  h->decimate.buffer_size = curr_seg.n_samples;
+
   sample(h);
-  t_sample = DWT_GetCycles() - t0 - t_pop;
-  //plot_buffer(h, h->plot.buffer, h->plot.buffer_size);  //draw_segment(h);
+
   draw_segment(h);
-  t_draw = DWT_GetCycles() - t0 - t_pop - t_sample;
-  uint32_t t1 = DWT_GetCycles();
-  n_cycles = t1 - t0;
+
 }
 
 

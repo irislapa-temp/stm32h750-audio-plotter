@@ -1,3 +1,4 @@
-../Core/Src/plot_adc.c:34:6:PlotADC_demo	2
-../Core/Src/plot_adc.c:95:6:HAL_ADC_ConvCpltCallback	4
-../Core/Src/plot_adc.c:117:6:HAL_ADC_ConvHalfCpltCallback	4
+../Core/Src/plot_adc.c:39:6:PlotAdcDemo	2
+../Core/Src/plot_adc.c:93:19:set_DMA_buff_size	4
+../Core/Src/plot_adc.c:116:6:HAL_ADC_ConvCpltCallback	4
+../Core/Src/plot_adc.c:138:6:HAL_ADC_ConvHalfCpltCallback	4
